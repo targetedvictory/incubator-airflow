@@ -54,7 +54,6 @@ _hooks = {
     'dbapi_hook': ['DbApiHook'],
     'mssql_hook': ['MsSqlHook'],
     'oracle_hook': ['OracleHook'],
-    'snowflake_hook': ['SnowflakeHook']
 }
 
 import os as _os
