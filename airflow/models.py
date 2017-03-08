@@ -536,6 +536,7 @@ class Connection(Base):
         ('mssql', 'Microsoft SQL Server'),
         ('mesos_framework-id', 'Mesos Framework ID'),
         ('jira', 'JIRA',),
+        ('snowflake', 'Snowflake'),
     ]
 
     def __init__(
