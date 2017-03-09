@@ -50,7 +50,7 @@ class SnowflakeOperator(BaseOperator):
             *args, **kwargs):
         super(SnowflakeOperator, self).__init__(*args, **kwargs)
         self.sql = sql
-        self.postgres_conn_id = snowflake_conn_id
+        self.snowflake_conn_id = snowflake_conn_id
         self.autocommit = autocommit
         self.parameters = parameters
         self.database = database
