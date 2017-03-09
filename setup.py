@@ -168,6 +168,9 @@ password = [
 github_enterprise = ['Flask-OAuthlib>=0.9.1']
 qds = ['qds-sdk>=1.9.0']
 cloudant = ['cloudant>=0.5.9,<2.0'] # major update coming soon, clamp to 0.x
+snowflake = ['snowflake-connector-python>=1.3.5',
+             'snowflake-sqlalchemy>=1.0.3'
+]
 
 all_dbs = postgres + mysql + hive + mssql + hdfs + vertica + cloudant
 devel = [
@@ -268,6 +271,7 @@ def do_setup():
             'vertica': vertica,
             'webhdfs': webhdfs,
             'jira': jira,
+            'snowflake': snowflake
         },
         classifiers=[
             'Development Status :: 5 - Production/Stable',
