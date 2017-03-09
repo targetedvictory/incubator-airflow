@@ -68,9 +68,9 @@ class SnowflakeOperator(BaseOperator):
         # (as opposed to passing to hook individually)
         sqls = [self.sql]
         if database:
-            sqls = ('use database ' + database) + sqls
+            sqls = ['use database ' + database] + sqls
         if warehouse:
-            sqls = ('use warehouse ' + database) + sqls
+            sqls = ['use warehouse ' + warehouse] + sqls
 
         logging.info('Executing: ' + str(sqls))
         self.hook.run(sqls, self.autocommit, parameters=self.parameters)

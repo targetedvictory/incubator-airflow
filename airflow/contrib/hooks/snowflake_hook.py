@@ -24,15 +24,17 @@ class SnowflakeHook(DbApiHook):
 
     def __init__(self, *args, **kwargs):
         super(SnowflakeHook, self).__init__(*args, **kwargs)
+        db = self.get_connection(getattr(self, self.conn_name_attr))
+        self.extra_params = db.extra_dejson
 
     def get_conn(self):
         """Returns a connection object
         """
         db = self.get_connection(getattr(self, self.conn_name_attr))
-        self.extra_params = db.extra_dejson
         # Note mapping of the host field in the connection object to
         # the Snowflake account.  database and warehouse are available
-        # in the extra_params dict.
+        # in the extra_params dict -- don't apply them here in case
+        # they are overridden in some cases.
         return self.connector.connect(
             user=db.login,
             account=db.host,
