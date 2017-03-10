@@ -12,9 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Initial contributors:
+# andrew@snowflake.net
+# dabercrombie@sharethrough.com
+# psheridan@crossscreen.media
+
 import logging
 
-from airflow.contrib.hooks import SnowflakeHook
+from airflow.contrib.hooks.snowflake_hook import SnowflakeHook
 from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
@@ -23,16 +28,16 @@ class SnowflakeOperator(BaseOperator):
     """
     Executes sql code in a Snowflake database & warehouse
 
-    :param postgres_conn_id: reference to a specific postgres database
-    :type postgres_conn_id: string
     :param sql: the sql code to be executed
     :type sql: Can receive a str representing a sql statement,
         a list of str (sql statements), or reference to a template file.
         Template reference are recognized by str ending in '.sql'
-    :param database: name of database which overwrite defined one in connection
+    :param snowflake_conn_id: reference to snowflake connection definiton
+    :type snowflake_conn_id: string
+    :param database: optional database overriding one in connection
     :type database: string
-    :param database: name of database which overwrite defined one in connection
-    :type database: string
+    :param warehouse: optional warehouse overriding one in connection
+    :type warehouse: string
     """
 
     template_fields = ('sql',)
@@ -57,20 +62,7 @@ class SnowflakeOperator(BaseOperator):
         self.warehouse = warehouse
 
     def execute(self, context):
-        # Attempt to get warehouse & database -- operator first, then
-        # connection.
-        self.hook = SnowflakeHook(snowflake_conn_id=self.snowflake_conn_id)
-
-        database = self.database or self.hook.extra_params.get('database')
-        warehouse = self.warehouse or self.hook.extra_params.get('warehouse')
-
-        # Use array of statements to make sure they are run on the same connection
-        # (as opposed to passing to hook individually)
-        sqls = [self.sql]
-        if database:
-            sqls = ['use database ' + database] + sqls
-        if warehouse:
-            sqls = ['use warehouse ' + warehouse] + sqls
-
-        logging.info('Executing: ' + str(sqls))
-        self.hook.run(sqls, self.autocommit, parameters=self.parameters)
+        self.hook = SnowflakeHook(snowflake_conn_id=self.snowflake_conn_id,
+            database=self.database, warehouse=self.warehouse)
+        logging.info('Executing: ' + str(self.sql))
+        self.hook.run(self.sql, self.autocommit, parameters=self.parameters)
